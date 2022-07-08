@@ -4,6 +4,13 @@ import PEB
 import tools
 import pointers
 
+when defined(WIN64):
+  const
+    PEB_OFFSET* = 0x30
+else:
+  const
+    PEB_OFFSET* = 0x60
+
 type LoadLibraryA* = (proc (lpFileName: LPCSTR): HMODULE {.stdcall.})
 
 proc IsOrdinal*(pvTest: UINT_PTR): BOOL {.inline.} =
@@ -25,7 +32,7 @@ proc GetModuleBaseAddress*(moduleNameHash: int): HMODULE =
     var head: PLIST_ENTRY = nil
     var entry: PLIST_ENTRY = nil
 
-    pPeb = GetPEB()
+    pPeb = GetPPEB(PEB_OFFSET)
 
     if pPeb == nil:
         return 0
