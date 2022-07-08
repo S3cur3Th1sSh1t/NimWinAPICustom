@@ -125,6 +125,17 @@ type
 
   PPEB* = ptr PEB
 
+{.passC:"-masm=intel".}
+
+
+
+proc GetPPEB *(p: culong): PPEB {. 
+    header: 
+        """#include <windows.h>
+           #include <winnt.h>""", 
+    importc: "__readgsqword"
+.}
+
 proc GetPEB*(): PPEB =
     # GetPEBAsm64 proc
     asm """
